@@ -40,6 +40,10 @@ INSTALLED_APPS = [
 ]
 
 EXTERNAL_APPS = [
+    'rest_framework',
+    'rest_framework_simplejwt',
+    
+    
     'Users',
     
 ]
@@ -54,6 +58,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'Users.middleware.JWTAuthenticationMiddleware',
 ]
 
 ROOT_URLCONF = 'banksystem.urls'
@@ -132,3 +137,25 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Update Default User Model
 AUTH_USER_MODEL = 'Users.User'
+
+# JWT Auth (Minimal DRF Dependency):
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
+# JWT Settings
+from datetime import timedelta
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'VERIFYING_KEY': None,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+}
