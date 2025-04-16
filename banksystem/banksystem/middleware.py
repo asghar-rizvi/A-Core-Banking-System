@@ -9,7 +9,6 @@ class JWTAuthenticationMiddleware:
 
     def __call__(self, request):
         if request.path in self.public_paths:
-            print(f"In Call function--> if statement...\nUser: {request.user}")
             return self.get_response(request)
 
         try:
