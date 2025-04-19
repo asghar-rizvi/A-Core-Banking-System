@@ -1,7 +1,6 @@
 from django.http import JsonResponse
 from django.views import View
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.hashers import make_password
 import json
 from .models import User
 from .serializers import UserSerializer
@@ -9,12 +8,15 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import exceptions
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-
+from django_ratelimit.decorators import ratelimit
 
 
 @method_decorator(csrf_exempt, name='dispatch')
 class RegisterView(View):
+    @method_decorator(ratelimit(key='ip', rate='15/m', block=True))
     def post(self, request):
+        if getattr(request, 'limited', False):
+            return JsonResponse({'error': 'Rate limit exceeded. Try again in a minute.'}, status=429)
         try:
             data = json.loads(request.body)
             

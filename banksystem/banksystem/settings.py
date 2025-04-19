@@ -149,3 +149,16 @@ SIMPLE_JWT = {
     'USER_ID_FIELD': 'id',
     'USER_ID_CLAIM': 'user_id',
 }
+
+# Celery Settings
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+
+# Redis cache
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/1',
+    }
+}
