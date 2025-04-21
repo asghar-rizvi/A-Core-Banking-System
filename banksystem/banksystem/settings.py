@@ -75,12 +75,12 @@ WSGI_APPLICATION = 'banksystem.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 
 # Password validation
@@ -162,3 +162,26 @@ CACHES = {
         'LOCATION': 'redis://127.0.0.1:6379/1',
     }
 }
+
+# Master Slave Setup
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'banksystem',
+        'USER': 'postgres',  
+        'PASSWORD': 'asghar', 
+        'HOST': 'localhost',
+        'PORT': '5434',  
+    },
+    'replica': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'banksystem',
+        'USER': 'postgres',
+        'PASSWORD': 'asghar',
+        'HOST': 'localhost',
+        'PORT': '5435', 
+    }
+}
+
+# Database router for read/write splitting
+DATABASE_ROUTERS = ['banksystem.ReadReplicaRouter.ReadReplicaRouter']
