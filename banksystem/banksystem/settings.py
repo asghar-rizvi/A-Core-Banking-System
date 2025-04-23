@@ -183,5 +183,4 @@ DATABASES = {
     }
 }
 
-# Database router for read/write splitting
 DATABASE_ROUTERS = ['banksystem.ReadReplicaRouter.ReadReplicaRouter']
