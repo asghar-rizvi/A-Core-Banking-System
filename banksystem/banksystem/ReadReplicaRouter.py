@@ -1,5 +1,3 @@
-# Setting Up Read/Write Seperate Operations
-
 class ReadReplicaRouter:
     def db_for_read(self, model, **hints):
         return 'replica'

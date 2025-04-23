@@ -1,3 +1,10 @@
+import os
+import django
+
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'banksystem.settings')  
+django.setup()
+
 from Banks.models import Bank, Branch
 
 pakistani_banks = [
@@ -103,7 +110,6 @@ pakistani_banks = [
     }
 ]
 
-# Insert data
 for bank_data in pakistani_banks:
     bank = Bank.objects.create(
         code=bank_data["code"],
