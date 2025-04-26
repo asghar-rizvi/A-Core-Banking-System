@@ -6,7 +6,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'banksystem.settings')
 django.setup()
 
 from Users.models import User
-from Banks.models import Bank, Branch
+from banksystem.Banks.models import Bank, Branch
 from Accounts.models import Account
 
 def generate_unique_account_number(bank):
