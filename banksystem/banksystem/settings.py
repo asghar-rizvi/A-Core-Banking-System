@@ -148,7 +148,9 @@ SIMPLE_JWT = {
 }
 
 # Celery Settings
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = 'redis://redis:6379/0'  # Changed from localhost
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 
@@ -156,7 +158,7 @@ CELERY_TASK_SERIALIZER = 'json'
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/1',
+        'LOCATION': 'redis://redis:6379/1',  # Changed from 127.0.0.1
     }
 }
 
@@ -167,7 +169,7 @@ DATABASES = {
         'NAME': 'banksystem',
         'USER': 'postgres',  
         'PASSWORD': 'asghar', 
-        'HOST': 'localhost',
+        'HOST': 'postgres-master',
         'PORT': '5434',  
     },
     'replica': {
@@ -175,7 +177,7 @@ DATABASES = {
         'NAME': 'banksystem',
         'USER': 'postgres',
         'PASSWORD': 'asghar',
-        'HOST': 'localhost',
+        'HOST': 'postgres-replica',
         'PORT': '5435', 
     }
 }

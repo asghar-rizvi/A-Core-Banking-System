@@ -1,0 +1,7 @@
+Django==4.2.20
+django_ratelimit==4.1.0
+djangorestframework==3.16.0
+djangorestframework_simplejwt==5.5.0
+Faker==37.1.0
+celery==5.3.6
+redis==5.0.4

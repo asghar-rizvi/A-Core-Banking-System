@@ -1,0 +1,84 @@
+version: '3.11'
+
+services:
+  postgres-master:
+    image: postgres:17
+    environment:
+      POSTGRES_PASSWORD: asghar
+      POSTGRES_DB: banksystem
+    volumes:
+      - pg_master_data:/var/lib/postgresql/data
+    ports:
+      - "5434:5434"  # Host:Container port
+    command: postgres -p 5434  # Explicitly set container port
+
+  postgres-replica:
+    image: postgres:17
+    environment:
+      POSTGRES_PASSWORD: asghar
+    depends_on:
+      - postgres-master
+    command: >
+      bash -c "
+      echo 'Waiting for master...';
+      while ! pg_isready -h postgres-master -p 5434; do sleep 2; done;
+      echo 'Initializing replica...';
+      pg_basebackup -h postgres-master -p 5434 -U postgres -D /var/lib/postgresql/data -P -R -X stream;
+      echo 'Starting replica...';
+      postgres -p 5435
+      "
+    volumes:
+      - pg_replica_data:/var/lib/postgresql/data
+    ports:
+      - "5435:5435"
+
+  # Redis
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  # Django App
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres-master
+      - redis
+    environment:
+      - DATABASE_URL=postgres://postgres:asghar@postgres-master:5434/banksystem
+      - REDIS_URL=redis://redis:6379/0
+
+  # Celery Worker
+  celery:
+    build: .
+    command: celery -A banksystem worker -l info
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - postgres-master
+    environment:
+      - DATABASE_URL=postgres://postgres:asghar@postgres-master:5434/banksystem
+      - REDIS_URL=redis://redis:6379/0
+
+  # Celery Beat (optional)
+  celery-beat:
+    build: .
+    command: celery -A banksystem beat -l info
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - postgres-master
+
+volumes:
+  pg_master_data:
+  pg_replica_data:
+  redis_data:
