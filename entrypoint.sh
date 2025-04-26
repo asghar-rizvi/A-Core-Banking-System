@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# Wait for PostgreSQL master to be ready
-while ! nc -z postgres-master 5434; do
+# Wait for PostgreSQL (using pg_isready instead of nc)
+while ! pg_isready -h postgres-master -p 5434 -U postgres -d banksystem -t 1; do
   echo "Waiting for PostgreSQL master..."
   sleep 2
 done
 
-# Apply database migrations
+# Apply migrations
 python manage.py migrate
 
-# Start server (or whatever command was passed)
+# Start the main command
 exec "$@"
