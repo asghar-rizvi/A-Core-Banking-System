@@ -11,7 +11,10 @@ WORKDIR /app
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     postgresql-client \
+    netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y netcat
 
 # Copy and install Python dependencies
 COPY requirements.txt .
